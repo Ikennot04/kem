@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-
+import "./Signin.css"
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 import { AppContext } from "../App";
@@ -65,34 +64,35 @@ export let  Signin = () => {
 
   return (
     <div className='Signin'>
+       
+     <div className="credentials-box">
       <h2>Signin</h2>
       <div className='email'>
-          <input
-            type='text'
-            placeholder='Email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+        <input
+          type='text'
+          placeholder='Email'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
 
-        <div className='password'>
-          <input
-            type='password'
-            placeholder='Password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            
-          />
-        </div>
-        <div>
-          <span className='error-response'>{response}</span>
-        </div>
-        <div className='btn'>
-      
-          <button onClick={handleSignin}>Signin</button>
-        </div>
+      <div className='password'>
+        <input
+          type='password'
+          placeholder='Password'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <div>
+        <span className='error-response'>{response}</span>
+      </div>
+      <div className='btn'>
+        <button onClick={handleSignin}>Signin</button>
+      </div>
 
       <Link to="/signup">Signup here</Link>
+    </div>
     </div>
   );
 };

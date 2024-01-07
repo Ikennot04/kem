@@ -1,0 +1,79 @@
+.all {
+    display: flex;
+    justify-content: flex-end; /* Align content to the right */
+    align-items: flex-start; /* Align content to the top */
+    min-height: 100vh;
+    background: url('pexels-roberto-nickson-2531237.jpg'); /* Background outside of the content */
+    background-size: cover;
+    padding: 20px; /* Add padding to create space around the box */
+}
+
+.Sign {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Align form to the right */
+    justify-content: flex-start; /* Align form to the top */
+    color: white;
+    text-align: right;
+    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+    padding: 20px;
+    border-radius: 25px; /* Rounded corners */
+    min-height: 100vh;
+}
+
+.Sign h1 {
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+}
+
+.Sign .info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.Sign .label {
+    margin-right: 10px; /* Adjust margin for spacing between label and input */
+}
+
+.Sign input {
+    width: 300px; /* Adjust width as needed */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.Sign button {
+    background-color: #61dafb; /* React blue color */
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.Sign button:hover {
+    background-color: #0a66c2; /* Darker blue on hover */
+}
+
+.Sign .error-response {
+    color: red;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.Sign a {
+    color: #61dafb; /* React blue color */
+    text-decoration: none;
+    font-size: 1rem;
+    margin-top: 20px;
+}
+
+.Sign a:hover {
+    text-decoration: underline;
+}
+
+/* Additional styles as needed */

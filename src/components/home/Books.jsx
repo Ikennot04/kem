@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Table, Button, Modal } from "react-bootstrap";
 import "../css/Books.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export let Books = () => {
   const [books, setBooks] = useState([]);
@@ -9,6 +11,7 @@ export let Books = () => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [updatedLocation, setUpdatedLocation] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Define location choices
   const locationChoices = [
@@ -44,29 +47,38 @@ export let Books = () => {
     fetchBooks();
   }, [isUpdating]); // Add isUpdating to the dependency array
 
-  const handleDeleteBook = async (bookId) => {
+  const handleDeleteBook = (bookId) => {
+    const bookToDelete = books.find((book) => book.book_id === bookId);
+    setSelectedBook(bookToDelete);
+    setShowDeleteModal(true);
+  };
+  
+  const confirmDelete = async () => {
     try {
       await axios.delete(
-        `https://apex.oracle.com/pls/apex/kentoy_cs_workspace/libraryManagement/library/${bookId}`
+        `https://apex.oracle.com/pls/apex/kentoy_cs_workspace/libraryManagement/library/${selectedBook.book_id}`
       );
-      setBooks(books.filter((book) => book.book_id !== bookId));
+      setBooks(books.filter((book) => book.book_id !== selectedBook.book_id));
       // Provide feedback to the user about successful deletion
     } catch (error) {
       // Handle deletion failure and provide feedback to the user
       console.error("Error deleting book:", error);
+    } finally {
+      setShowDeleteModal(false);
+      setSelectedBook(null); // Reset selectedBook after deletion
     }
   };
-
+  
   const handleUpdateBook = async () => {
     try {
-      setIsUpdating(true); // Set loading state to true
-      await axios.put(
-        `https://apex.oracle.com/pls/apex/kentoy_cs_workspace/libraryManagement/library/${selectedBook.book_id}`,
-        { ...selectedBook, location: updatedLocation }
-      );
-      setUpdatedLocation("");
-      setSelectedBook(null);
-      // Provide feedback to the user about successful update
+      if (selectedBook) {
+        console.log("Update button clicked. Updating book:", selectedBook);
+        setIsUpdating(true); // Set loading state to true
+        // ... rest of the update logic ...
+      } else {
+        // Handle the case where no book is selected
+        console.error("No book selected for update");
+      }
     } catch (error) {
       // Handle update failure and provide feedback to the user
       console.error("Error updating book:", error);
@@ -74,7 +86,6 @@ export let Books = () => {
       setIsUpdating(false); // Set loading state back to false
     }
   };
-
   const openUpdateModal = (book) => {
     setSelectedBook(book);
     setUpdatedLocation(book.location);
@@ -87,13 +98,13 @@ export let Books = () => {
 
   return (
     <div className="all-books">
-      <h1>Books Library</h1>
+      <h1>BOOKS IN THE LIBRARY</h1>
       {isLoading ? (
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
       ) : Array.isArray(books) && books.length > 0 ? (
-        <table>
+        <Table striped bordered hover responsive>
           <thead>
             <tr>
               <th>Book ID</th>
@@ -117,47 +128,68 @@ export let Books = () => {
                 <td>{book.created_at}</td>
                 <td>{book.updated_at}</td>
                 <td>
-                  <button onClick={() => handleDeleteBook(book.book_id)}>
+                  <Button variant="danger" onClick={() => handleDeleteBook(book.book_id)}>
                     Delete
-                  </button>
-                  <button onClick={() => openUpdateModal(book)}>Update</button>
+                  </Button>
+                  <Button variant="info" onClick={() => openUpdateModal(book)}>
+                    Update
+                  </Button>
                 </td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       ) : (
         <p>No books available</p>
       )}
       {selectedBook && (
-         <div className="modal">
-         <div className="modal-content">
-           <span className="close" onClick={closeUpdateModal}>
-             &times;
-           </span>
-           <h2>Update Book</h2>
-           <p>Title: {selectedBook.name_book}</p>
-           <p>Author: {selectedBook.author}</p>
-           <label>
-             Location:
-             <select
-               value={updatedLocation}
-               onChange={(e) => setUpdatedLocation(e.target.value)}
-             >
-               {locationChoices.map((location, index) => (
-                 <option key={index} value={location}>
-                   {location}
-                 </option>
-               ))}
-             </select>
-           </label>
-           <button onClick={handleUpdateBook} disabled={isUpdating}>
+        <Modal centered show={true} onHide={closeUpdateModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Update Book</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Title: {selectedBook.name_book}</p>
+            <p>Author: {selectedBook.author}</p>
+            <label>
+              Location:
+              <select
+                value={updatedLocation}
+                onChange={(e) => setUpdatedLocation(e.target.value)}
+              >
+                {locationChoices.map((location, index) => (
+                  <option key={index} value={location}>
+                    {location}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={closeUpdateModal}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleUpdateBook} disabled={isUpdating}>
               {isUpdating ? "Updating..." : "Save"}
-            </button>
-         </div>
-       </div>
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
-      <div className="book"></div>
+      <Modal centered show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this book?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            No
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 import { AppContext } from "../App";
-
+import "./Signup.css"
 export let Signup = () => {
   let checkUser = sessionStorage.getItem("user");
 
@@ -65,13 +65,13 @@ export let Signup = () => {
         <h1>Create your Account</h1>
         
         <div className='info'>
-          <h1>First name</h1>
+          <label>FIRST NAME</label>
           <input
             type='text'
             value={firstname}
             onChange={(e) => setFirstName(e.target.value)}
           />
-          <h1>Last name</h1>
+          <label>LAST NAME</label>
           <input
             type='text'
             value={lastname}
@@ -102,9 +102,11 @@ export let Signup = () => {
         <div className='btn'>
       
           <button onClick={handleSignup}>Signup</button>
+
         </div>
+        <div>Member already? Signin<Link to='/'> here</Link></div>
       </div>
-      <div>Member already? Signin<Link to='/'> here</Link></div>
+      
     </div>
     
   );
